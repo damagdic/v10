@@ -42,6 +42,7 @@ public:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
 	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
+	virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo) override;
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -59,6 +60,8 @@ protected:
 	//{{AFX_MSG(RecView)
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+
+
 };
 
 #ifndef _DEBUG  // debug version in RecView.cpp
