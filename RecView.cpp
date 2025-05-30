@@ -75,58 +75,54 @@ BOOL RecView::OnPreparePrinting(CPrintInfo* pInfo)
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
-
     Set rs;
     rs.Open();
 
     int pageWidth = pDC->GetDeviceCaps(HORZRES);
-    int pageHeight = pDC->GetDeviceCaps(VERTRES);
-
 
     CFont font;
-    font.CreatePointFont(100, _T("Arial"), pDC);
-
+    font.CreatePointFont(100, _T("Arial"), pDC); 
     CFont* pOldFont = pDC->SelectObject(&font);
+
     CSize textSize = pDC->GetTextExtent(_T("Test"));
     int lineHeight = textSize.cy + 10;
 
-    int y = 100; 
+    int margin = 50;
+    int colID = margin;
+    int colName = pageWidth / 3;
+    int colManager = 2 * pageWidth / 3;
 
-    pDC->TextOut(100, y, _T("ID"));
-    pDC->TextOut(200, y, _T("Name"));
-    pDC->TextOut(500, y, _T("Manager"));
+    int y = margin;
+
+    pDC->TextOut(colID, y, _T("ID"));
+    pDC->TextOut(colName, y, _T("Name"));
+    pDC->TextOut(colManager, y, _T("Manager"));
+
     y += lineHeight;
 
-    CPen pen(PS_SOLID, 1, RGB(0, 0, 0)); 
+
+    CPen pen(PS_SOLID, 1, RGB(0, 0, 0));
     CPen* pOldPen = pDC->SelectObject(&pen);
-    pDC->MoveTo(100, y);
-    pDC->LineTo(pageWidth - 100, y);
-    pDC->SelectObject(pOldPen);
-    pen.DeleteObject();
+    pDC->MoveTo(margin, y - 5);
+    pDC->LineTo(pageWidth - margin, y - 5);
+    pDC->SelectObject(pOldPen); 
 
-    y += 5;
-
+   
     while (!rs.IsEOF())
     {
-        CString strId, strName, strManager;
-
+        CString strId;
         strId.Format(_T("%d"), rs.m_id);
-        strName = rs.m_name;
-        strManager = rs.m_manager ? _T("x") : _T("");
 
-        pDC->TextOut(100, y, strId);
-        pDC->TextOut(200, y, strName);
-        pDC->TextOut(500, y, strManager);
+        pDC->TextOut(colID, y, strId);
+        pDC->TextOut(colName, y, rs.m_name);
+        if (rs.m_manager)
+            pDC->TextOut(colManager, y, _T("x"));
 
         y += lineHeight;
-
         rs.MoveNext();
     }
 
     pDC->SelectObject(pOldFont);
-    font.DeleteObject();
-
-    rs.Close();
 }
 
 void RecView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
